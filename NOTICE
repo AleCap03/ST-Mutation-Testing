@@ -1,0 +1,12 @@
+Mutation Testing Tool for IEC 61131-3
+Copyright 2026 Alessandro Capra
+
+This product includes software (specifically the ANTLR4 grammar for IEC 61131-3) 
+originally developed by Vladimir Sitnikov (https://github.com/vlsi/iec61131-parser),
+which is licensed under the MIT License.
+
+A copy of the MIT License statement (from README):
+-----------------------------------------------------------
+Copyright (c) Vladimir Sitnikov
+This library is distributed under terms of MIT license.
+-----------------------------------------------------------
