@@ -22,7 +22,7 @@ public class StParserDemo {
         IEC61131Lexer lexer = new IEC61131Lexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         IEC61131Parser parser = new IEC61131Parser(tokens);
-        ParseTree tree = parser.statement();
+        ParseTree tree = parser.statement_list();
         ASTBuilder builder = new ASTBuilder(tokens);
         ASTNode rootAST = builder.visit(tree);
 
@@ -41,7 +41,7 @@ public class StParserDemo {
         //System.out.println("Mutanti candidati identificati: " + listaPiani.size());
  
         // FILTRAZIONE: Selezione casuale
-        double mutationRate = 0.5;
+        double mutationRate = 1;
         Collections.shuffle(listaPiani); 
         int targetSize = (int) (listaPiani.size() * mutationRate);
         // Assicura di generare almeno un mutante se la lista non è vuota
@@ -107,6 +107,11 @@ public class StParserDemo {
                 }
             }
         }
+        else if (nodo instanceof BlockNode block) {
+            for (ASTNode stmt : block.statements) {
+                raccogliPunti(stmt, lista);
+            }
+        }
     }
 
     
@@ -137,6 +142,12 @@ public class StParserDemo {
                     t = trovaNodoPerId(s, id);
                     if (t != null) return t;
                 }
+            }
+        }
+        else if (radice instanceof BlockNode block) {
+            for (ASTNode s : block.statements) {
+                ASTNode t = trovaNodoPerId(s, id);
+                if (t != null) return t;
             }
         }
         return null;

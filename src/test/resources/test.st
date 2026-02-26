@@ -1,5 +1,9 @@
-IF (Pressione > 100 AND Livello < 50) THEN
-    Valvola := (Portata * 1.5) + Offset;
+PressioneBar := (SegnalePressione * 0.01) + Offset;
+
+IF (PressioneBar > SogliaMassima) OR (Emergenza = TRUE) THEN
+    ValvolaScarico := TRUE;
+    PompaMarcia := FALSE;
 ELSE
-    Valvola := 0.0;
+    ValvolaScarico := FALSE;
+    PompaMarcia := TRUE;
 END_IF;

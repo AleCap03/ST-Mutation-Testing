@@ -205,6 +205,23 @@ public class ASTBuilder extends IEC61131BaseVisitor<ASTNode> {
     public ASTNode visitStatement(IEC61131Parser.StatementContext ctx) {
         return visit(ctx.getChild(0)); 
     }
+    
+    @Override
+    public ASTNode visitStatement_list(IEC61131Parser.Statement_listContext ctx) {
+        // Creiamo un nodo che contiene una lista di istruzioni
+        BlockNode programBlock = new BlockNode();
+        
+        // Cicliamo su tutti gli statement definiti nella grammatica per questa lista
+        if (ctx.statement() != null) {
+            for (IEC61131Parser.StatementContext stmtCtx : ctx.statement()) {
+                ASTNode node = visit(stmtCtx);
+                if (node != null) {
+                    programBlock.addStatement(node);
+                }
+            }
+        }
+        return programBlock;
+    }
 
     @Override
     public ASTNode visitLiteralExpression(IEC61131Parser.LiteralExpressionContext ctx) {

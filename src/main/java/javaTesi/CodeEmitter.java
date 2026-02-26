@@ -7,6 +7,14 @@ public class CodeEmitter {
 	        System.out.println("FATAL DEBUG: Chiamata a emit(null)");
 	        return "";
 	    }
+	    
+	    if (node instanceof BlockNode block) {
+            StringBuilder sb = new StringBuilder();
+            for (ASTNode stmt : block.statements) {
+                sb.append(emit(stmt)).append("\n");
+            }
+            return sb.toString();
+        }
 
 	    if (node instanceof BinaryOpNode binaryNode) {
 	        String emittedRight = emit(binaryNode.right);
