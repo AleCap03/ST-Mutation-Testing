@@ -1,5 +1,6 @@
 package javaTesi;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class StParserDemo {
         //System.out.println("Mutanti candidati identificati: " + listaPiani.size());
  
         // FILTRAZIONE: Selezione casuale
-        double mutationRate = 1;
+        double mutationRate = 1.0;
         Collections.shuffle(listaPiani); 
         int targetSize = (int) (listaPiani.size() * mutationRate);
         // Assicura di generare almeno un mutante se la lista non è vuota
@@ -51,7 +52,16 @@ public class StParserDemo {
         // GENERAZIONE
         CodeEmitter emitter = new CodeEmitter();
         Path outputDir = Paths.get("target/mutants");
-        if (!Files.exists(outputDir)) Files.createDirectories(outputDir);
+        // PULIZIA CARTELLA: Cancella i file esistenti prima di generare i nuovi
+        if (Files.exists(outputDir)) {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(outputDir)) {
+                for (Path entry : stream) {
+                    Files.delete(entry);
+                }
+            }
+        } else {
+            Files.createDirectories(outputDir);
+        }
 
         for (int i = 0; i < pianiFiltrati.size(); i++) {
             MutationPlan piano = pianiFiltrati.get(i);
@@ -112,6 +122,17 @@ public class StParserDemo {
                 raccogliPunti(stmt, lista);
             }
         }
+        else if (nodo instanceof ForStatementNode forNode) {
+            // Cerca punti di mutazione nei limiti del ciclo (se sono espressioni)
+            raccogliPunti(forNode.startValue, lista);
+            raccogliPunti(forNode.endValue, lista);
+            if (forNode.stepValue != null) raccogliPunti(forNode.stepValue, lista);
+            
+            // Cerca punti di mutazione dentro il corpo del ciclo
+            for (ASTNode stmt : forNode.body) {
+                raccogliPunti(stmt, lista);
+            }
+        }
     }
 
     
@@ -147,6 +168,20 @@ public class StParserDemo {
         else if (radice instanceof BlockNode block) {
             for (ASTNode s : block.statements) {
                 ASTNode t = trovaNodoPerId(s, id);
+                if (t != null) return t;
+            }
+        }
+        else if (radice instanceof ForStatementNode forNode) {
+            ASTNode t = trovaNodoPerId(forNode.startValue, id);
+            if (t != null) return t;
+            t = trovaNodoPerId(forNode.endValue, id);
+            if (t != null) return t;
+            if (forNode.stepValue != null) {
+                t = trovaNodoPerId(forNode.stepValue, id);
+                if (t != null) return t;
+            }
+            for (ASTNode s : forNode.body) {
+                t = trovaNodoPerId(s, id);
                 if (t != null) return t;
             }
         }

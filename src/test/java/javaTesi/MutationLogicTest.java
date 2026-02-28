@@ -94,6 +94,7 @@ public class MutationLogicTest {
         String code = "FOR i := 1 TO 10 DO Massa := Massa + 1; END_FOR;";
         ASTNode root = parseSnippet(code);
         
+        
         assertTrue(root instanceof ForStatementNode, "Dovrebbe essere un ForStatementNode");
         ForStatementNode forNode = (ForStatementNode) root;
         assertEquals("i", forNode.loopVariable.name);

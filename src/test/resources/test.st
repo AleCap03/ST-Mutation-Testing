@@ -1,9 +1,6 @@
-PressioneBar := (SegnalePressione * 0.01) + Offset;
+Somma := 0;
+FOR i := 0 TO 9 DO
+    Somma := Somma + i;
+END_FOR;
 
-IF (PressioneBar > SogliaMassima) OR (Emergenza = TRUE) THEN
-    ValvolaScarico := TRUE;
-    PompaMarcia := FALSE;
-ELSE
-    ValvolaScarico := FALSE;
-    PompaMarcia := TRUE;
-END_IF;
+Media := Somma / 10;
