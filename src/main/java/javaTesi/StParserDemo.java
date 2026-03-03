@@ -24,8 +24,20 @@ public class StParserDemo {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         IEC61131Parser parser = new IEC61131Parser(tokens);
         ParseTree tree = parser.statement_list();
+        
+        /*System.out.println("--- PARSE TREE (Gerarchia ANTLR4) ---");
+        // Stampa il Parse Tree in formato testuale indentato
+        System.out.println(tree.toStringTree(parser)); 
+        System.out.println("\n");*/
+        
+        
         ASTBuilder builder = new ASTBuilder(tokens);
         ASTNode rootAST = builder.visit(tree);
+        
+        /*System.out.println("--- ABSTRACT SYNTAX TREE (AST Personalizzato) ---");
+        printAST(rootAST, 0);
+        System.out.println("\n");*/
+        
 
         // IDENTIFICAZIONE: Trova tutti i punti dove possiamo applicare una mutazione
         List<BinaryOpNode> puntiDiMutazione = new ArrayList<>();
@@ -187,4 +199,28 @@ public class StParserDemo {
         }
         return null;
     }
+    
+    // Metodo per stampare AST (semplificato)
+    /*private static void printAST(ASTNode node, int indent) {
+        if (node == null) return;
+        
+        String indentation = "  ".repeat(indent);
+        System.out.println(indentation + "|-- " + node.getClass().getSimpleName() + 
+            (node instanceof BinaryOpNode ? " [Op: " + ((BinaryOpNode)node).operator + "]" : "") +
+            (node instanceof AssignmentNode ? " [Var: " + ((AssignmentNode)node).target + "]" : ""));
+            
+        if (node instanceof BlockNode block) {
+            for (ASTNode s : block.statements) printAST(s, indent + 1);
+        } 
+        else if (node instanceof AssignmentNode asn) {
+            printAST(asn.expression, indent + 1);
+        }
+        else if (node instanceof BinaryOpNode bin) {
+            printAST(bin.left, indent + 1);
+            printAST(bin.right, indent + 1);
+        }
+        else if (node instanceof ParenthesizedExpressionNode paren) {
+            printAST(paren.getExpression(), indent + 1);
+        }
+    }*/
 }
